@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BEYBLADE X - Hub Arsenale</title>
+    <style>
+        :root {
+            --bx-green: #00ff55;
+            --bx-cyan: #00d4ff;
+            --bg-base: #09090b;
+            --panel-bg: #131316;
+            --card-bg: #1c1c22;
+            --text-main: #f4f4f5;
+            --border-dim: #272730;
+            --danger: #ff2a2a;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-base);
+            background-image: 
+                linear-gradient(rgba(0, 255, 85, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 85, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px; /* Ridotto per schermi piccoli */
+        }
+
+        h1 {
+            font-size: 2em; /* Ridotto per non sbordare su mobile */
+            font-style: italic;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 10px;
+            background: linear-gradient(90deg, var(--bx-green), var(--bx-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 255, 85, 0.2);
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.3em;
+            font-style: italic;
+            font-weight: 800;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--bx-cyan);
+            padding-bottom: 5px;
+            margin-top: 0;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-dim);
+            border-radius: 15px 0 15px 0;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--bx-green), var(--bx-cyan));
+        }
+
+        .full-width { grid-column: 1 / -1; }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Rende le colonne fluide su mobile */
+            gap: 15px;
+        }
+
+        .col-box {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px 0 8px 0;
+            border-left: 3px solid;
+        }
+        
+        .col-blades { border-color: #ff3366; }
+        .col-ratchets { border-color: #ffd700; }
+        .col-bits { border-color: #33ccff; }
+        .col-box h3 { font-size: 1.1em; margin: 0 0 10px 0; font-style: italic; text-transform: uppercase;}
+        .col-blades h3 { color: #ff3366; }
+        .col-ratchets h3 { color: #ffd700; }
+        .col-bits h3 { color: #33ccff; }
+
+        ul { list-style-type: none; padding: 0; margin: 0; }
+        li {
+            padding: 10px 0; /* Più spazio per il tocco su mobile */
+            border-bottom: 1px dashed var(--border-dim);
+            font-size: 1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        li:last-child { border-bottom: none; }
+
+        .del-part {
+            color: var(--danger);
+            cursor: pointer;
+            font-weight: 900;
+            font-family: monospace;
+            padding: 5px 10px; /* Area di tocco aumentata */
+            background: rgba(255, 42, 42, 0.1);
+            border-radius: 4px;
+        }
+
+        /* Dimensionamento per le dita (Touch Targets) */
+        select, input, button {
+            width: 100%;
+            padding: 15px; /* Aumentato per mobile */
+            margin-bottom: 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            color: white;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1em;
+            box-sizing: border-box;
+            outline: none;
+            -webkit-appearance: none; /* Rimuove stili nativi iOS strani */
+        }
+
+        button {
+            background: linear-gradient(45deg, var(--bx-green), var(--bx-cyan));
+            color: #000;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px 0 8px 0;
+            box-shadow: 0 4px 10px rgba(0, 255, 85, 0.2);
+        }
+
+        button:active { transform: scale(0.98); }
+
+        .btn-secondary { background: #2a2a35; color: #fff; box-shadow: none; }
+        .btn-action { background: #33ccff; color: #000; }
+
+        .combo-card {
+            background: linear-gradient(135deg, var(--card-bg), var(--panel-bg));
+            border: 1px solid var(--border-dim);
+            border-left: 5px solid var(--bx-green);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 10px 0 10px;
+            position: relative;
+        }
+
+        .combo-card h3 { margin: 0 0 10px 0; color: #fff; font-size: 1.2em; }
+        
+        .combo-stats {
+            display: flex;
+            flex-wrap: wrap; /* Permette di andare a capo su schermi piccoli */
+            gap: 8px;
+            font-size: 0.9em;
+            color: #ccc;
+            font-weight: 600;
+        }
+        
+        .combo-stats span {
+            background: rgba(0,0,0,0.5);
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-dim);
+            flex-grow: 1; /* Riempe lo spazio disponibile */
+            text-align: center;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 10px; right: 10px;
+            width: auto;
+            padding: 5px 12px;
+            background: var(--danger);
+            color: white;
+            font-size: 0.8em;
+            margin: 0;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* MEDIA QUERIES PER SMARTPHONE */
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+            h1 { font-size: 1.6em; }
+            .tools-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>BEYBLADE X HUD</h1>
+
+    <div class="container">
+        <div class="panel">
+            <h2>1. Scansione Componenti</h2>
+            <select id="singlePartType">
+                <option value="blades">Lama (Blade)</option>
+                <option value="ratchets">Cricchetto (Ratchet)</option>
+                <option value="bits">Punta (Bit)</option>
+            </select>
+            <input type="text" id="singlePartName" placeholder="Es: 4-55, Taper, Wyvern...">
+            <button onclick="addSinglePart()">Acquisisci Componente</button>
+        </div>
+
+        <div class="panel">
+            <h2>2. Setup Tattico</h2>
+            <input type="text" id="comboName" placeholder="Nome in Codice (es. Lo Zombie)">
+            <select id="comboBlade"><option value="">-- Seleziona Lama --</option></select>
+            <select id="comboRatchet"><option value="">-- Seleziona Cricchetto --</option></select>
+            <select id="comboBit"><option value="">-- Seleziona Punta --</option></select>
+            <button onclick="saveCombo()">Inizializza Deck</button>
+        </div>
+
+        <div class="panel full-width">
+            <h2>Database Magazzino</h2>
+            <div class="inventory-grid">
+                <div class="col-box col-blades">
+                    <h3>[ Blades ]</h3>
+                    <ul id="listBlades"></ul>
+                </div>
+                <div class="col-box col-ratchets">
+                    <h3>[ Ratchets ]</h3>
+                    <ul id="listRatchets"></ul>
+                </div>
+                <div class="col-box col-bits">
+                    <h3>[ Bits ]</h3>
+                    <ul id="listBits"></ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel full-width">
+            <h2>Deck Operativi</h2>
+            <div id="comboContainer"></div>
+        </div>
+
+        <div class="panel full-width">
+            <h2>Strumenti di Sistema</h2>
+            <p style="color:#aaa; font-size:0.9em; margin-top:0;">Salva i tuoi dati per non perderli o per passarli su un altro dispositivo.</p>
+            <div class="tools-grid">
+                <button class="btn-action" onclick="exportData()">💾 Esporta Backup</button>
+                <button class="btn-action" onclick="document.getElementById('importFile').click()">📂 Importa Backup</button>
+                <input type="file" id="importFile" style="display:none;" accept=".json" onchange="importData(event)">
+            </div>
+            <button class="btn-secondary" onclick="clearInventory()" style="margin-bottom: 0; margin-top: 10px;">⚠️ Purge System (Reset Totale)</button>
+        </div>
+    </div>
+
+    <script>
+        let inventory = { blades: [], ratchets: [], bits: [] };
+        let savedCombos = [];
+
+        try {
+            const storedInv = localStorage.getItem('bx_inventory');
+            if (storedInv) inventory = JSON.parse(storedInv);
+            const storedCombos = localStorage.getItem('bx_combos');
+            if (storedCombos) savedCombos = JSON.parse(storedCombos);
+        } catch (error) {}
+
+        function addSinglePart() {
+            const type = document.getElementById("singlePartType").value;
+            const name = document.getElementById("singlePartName").value.trim();
+            if (!name) return;
+            if (!inventory[type].includes(name)) {
+                inventory[type].push(name);
+                document.getElementById("singlePartName").value = ''; 
+                saveData(); updateUI();
+            } else {
+                alert("ATTENZIONE: Componente già presente nel database!");
+            }
+        }
+
+        function removePart(type, name) {
+            inventory[type] = inventory[type].filter(item => item !== name);
+            saveData(); updateUI();
+        }
+
+        function saveCombo() {
+            const name = document.getElementById("comboName").value.trim();
+            const blade = document.getElementById("comboBlade").value;
+            const ratchet = document.getElementById("comboRatchet").value;
+            const bit = document.getElementById("comboBit").value;
+
+            if (!name || !blade || !ratchet || !bit) {
+                alert("ERRORE: Setup incompleto. Selezionare tutti i moduli."); return;
+            }
+            savedCombos.push({ id: Date.now(), name, blade, ratchet, bit });
+            document.getElementById("comboName").value = '';
+            saveData(); updateUI();
+        }
+
+        function deleteCombo(id) {
+            savedCombos = savedCombos.filter(combo => combo.id !== id);
+            saveData(); updateUI();
+        }
+
+        function clearInventory() {
+            if(confirm("ATTENZIONE CRITICA: Vuoi formattare il magazzino e cancellare tutte le combo? L'azione è irreversibile.")) {
+                inventory = { blades: [], ratchets: [], bits: [] };
+                savedCombos = [];
+                saveData(); updateUI();
+            }
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem('bx_inventory', JSON.stringify(inventory));
+                localStorage.setItem('bx_combos', JSON.stringify(savedCombos));
+            } catch (error) {}
+        }
+
+        // --- NUOVE FUNZIONI DI BACKUP ---
+        function exportData() {
+            const dataToExport = { inventory: inventory, combos: savedCombos };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToExport));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href",     dataStr);
+            downloadAnchorNode.setAttribute("download", "bx_arsenale_backup.json");
+            document.body.appendChild(downloadAnchorNode); 
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if(importedData.inventory && importedData.combos) {
+                        inventory = importedData.inventory;
+                        savedCombos = importedData.combos;
+                        saveData(); updateUI();
+                        alert("Backup importato con successo!");
+                    } else {
+                        alert("File non valido o corrotto.");
+                    }
+                } catch (error) {
+                    alert("Errore durante la lettura del file.");
+                }
+                document.getElementById('importFile').value = ''; // Resetta l'input
+            };
+            reader.readAsText(file);
+        }
+
+        function updateUI() {
+            document.getElementById("listBlades").innerHTML = inventory.blades.map(i => `<li>${i} <span class="del-part" onclick="removePart('blades', '${i}')">X</span></li>`).join('');
+            document.getElementById("listRatchets").innerHTML = inventory.ratchets.map(i => `<li>${i} <span class="del-part" onclick="removePart('ratchets', '${i}')">X</span></li>`).join('');
+            document.getElementById("listBits").innerHTML = inventory.bits.map(i => `<li>${i} <span class="del-part" onclick="removePart('bits', '${i}')">X</span></li>`).join('');
+
+            const bladeSelect = document.getElementById("comboBlade");
+            const ratchetSelect = document.getElementById("comboRatchet");
+            const bitSelect = document.getElementById("comboBit");
+
+            bladeSelect.innerHTML = '<option value="">-- Seleziona Lama --</option>' + inventory.blades.map(i => `<option value="${i}">${i}</option>`).join('');
+            ratchetSelect.innerHTML = '<option value="">-- Seleziona Cricchetto --</option>' + inventory.ratchets.map(i => `<option value="${i}">${i}</option>`).join('');
+            bitSelect.innerHTML = '<option value="">-- Seleziona Punta --</option>' + inventory.bits.map(i => `<option value="${i}">${i}</option>`).join('');
+
+            const container = document.getElementById("comboContainer");
+            if (savedCombos.length === 0) {
+                container.innerHTML = "<p style='color: #777; font-style: italic; text-align: center;'>Nessun deck operativo. Inizializzare un setup dal pannello superiore.</p>";
+            } else {
+                container.innerHTML = savedCombos.map(combo => `
+                    <div class="combo-card">
+                        <button class="delete-btn" onclick="deleteCombo(${combo.id})">Rimuovi</button>
+                        <h3>${combo.name}</h3>
+                        <div class="combo-stats">
+                            <span>🗡️ ${combo.blade}</span>
+                            <span>⚙️ ${combo.ratchet}</span>
+                            <span>🎯 ${combo.bit}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
