@@ -14,9 +14,14 @@
             --text-main: #f4f4f5;
             --border-dim: #272730;
             --danger: #ff2a2a;
+            
+            --blade-color: #ff3366;
+            --main-color: #ff9900;
+            --assist-color: #cc33ff;
+            --ratchet-color: #ffd700;
+            --bit-color: #33ccff;
         }
 
-        /* Impedisce la fastidiosa selezione del testo blu quando tappi velocemente sul cellulare */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-base);
@@ -56,13 +61,7 @@
             text-transform: uppercase;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+        .container { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
 
         .panel {
             background: var(--panel-bg);
@@ -82,19 +81,13 @@
             background: linear-gradient(90deg, var(--bx-green), var(--bx-cyan));
         }
 
-        /* Contenitore per permettere lo scroll orizzontale su mobile senza rompere le 5 colonne */
-        .table-scroll {
-            width: 100%;
-            overflow-x: auto;
-            padding-bottom: 15px;
-        }
+        .table-scroll { width: 100%; overflow-x: auto; padding-bottom: 15px; }
 
-        /* Griglia forzata a 5 colonne, non va mai a capo */
         .five-col-grid {
             display: grid;
-            grid-template-columns: repeat(5, minmax(180px, 1fr));
+            grid-template-columns: repeat(5, minmax(190px, 1fr));
             gap: 15px;
-            min-width: 950px; /* Forza la larghezza per attivare lo scroll su mobile */
+            min-width: 980px; 
         }
 
         .input-group {
@@ -112,31 +105,50 @@
             margin-bottom: 8px;
             font-weight: bold;
             text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .col-box {
             background: var(--card-bg);
             border-radius: 8px 0 8px 0;
             border: 1px solid var(--border-dim);
-            border-top: 4px solid;
             overflow: hidden;
         }
         
-        .col-blades { border-top-color: #ff3366; }
-        .col-main-blades { border-top-color: #ff9900; }
-        .col-assist-blades { border-top-color: #cc33ff; }
-        .col-ratchets { border-top-color: #ffd700; }
-        .col-bits { border-top-color: #33ccff; }
+        .col-blades { border-top: 4px solid var(--blade-color); }
+        .col-main-blades { border-top: 4px solid var(--main-color); }
+        .col-assist-blades { border-top: 4px solid var(--assist-color); }
+        .col-ratchets { border-top: 4px solid var(--ratchet-color); }
+        .col-bits { border-top: 4px solid var(--bit-color); }
 
         .col-box h3 { 
-            font-size: 1em; 
+            font-size: 0.95em; 
             margin: 0; 
             padding: 10px;
             background: rgba(0,0,0,0.4);
             font-style: italic; 
             text-transform: uppercase;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
+
+        .part-icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        .col-blades .part-icon { color: var(--blade-color); }
+        .col-main-blades .part-icon { color: var(--main-color); }
+        .col-assist-blades .part-icon { color: var(--assist-color); }
+        .col-ratchets .part-icon { color: var(--ratchet-color); }
+        .col-bits .part-icon { color: var(--bit-color); }
 
         ul { list-style-type: none; padding: 0; margin: 0; }
         li {
@@ -147,12 +159,11 @@
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.15s;
         }
         li:hover { background: rgba(255,255,255,0.03); }
         li:last-child { border-bottom: none; }
 
-        /* Stile per i pezzi toccati/selezionati per la combo */
         li.active-part {
             background: rgba(0, 255, 85, 0.15);
             color: var(--bx-green);
@@ -165,57 +176,38 @@
             cursor: pointer;
             font-weight: 900;
             font-family: monospace;
-            padding: 5px 10px;
+            padding: 4px 8px;
             background: rgba(255, 42, 42, 0.1);
             border-radius: 4px;
+            font-size: 0.8em;
         }
 
         input {
-            width: 100%;
-            padding: 12px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--border-dim);
-            color: white;
-            border-radius: 4px;
-            font-family: inherit;
-            font-size: 0.95em;
-            box-sizing: border-box;
-            outline: none;
-            -webkit-appearance: none;
+            width: 100%; padding: 12px; background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border-dim); color: white;
+            border-radius: 4px; font-family: inherit; font-size: 0.95em;
+            box-sizing: border-box; outline: none; -webkit-appearance: none;
         }
         
         .input-group input { margin-bottom: 10px; }
 
         button {
-            width: 100%;
-            padding: 12px;
+            width: 100%; padding: 12px;
             background: linear-gradient(45deg, var(--bx-green), var(--bx-cyan));
-            color: #000;
-            font-weight: 900;
-            font-style: italic;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            border: none;
-            border-radius: 8px 0 8px 0;
-            box-shadow: 0 4px 10px rgba(0, 255, 85, 0.2);
-            margin-bottom: 10px;
+            color: #000; font-weight: 900; font-style: italic;
+            text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; border: none; border-radius: 8px 0 8px 0;
+            box-shadow: 0 4px 10px rgba(0, 255, 85, 0.2); margin-bottom: 10px;
         }
 
         button:active { transform: scale(0.98); }
         .btn-secondary { background: #2a2a35; color: #fff; box-shadow: none; }
         .btn-action { background: #33ccff; color: #000; }
 
-        /* Barra di salvataggio combo */
         .save-combo-bar {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
-            background: rgba(0, 255, 85, 0.05);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px dashed var(--bx-green);
-            align-items: center;
+            display: flex; gap: 15px; margin-top: 15px;
+            background: rgba(0, 255, 85, 0.05); padding: 15px;
+            border-radius: 8px; border: 1px dashed var(--bx-green); align-items: center;
         }
         .save-combo-bar input { margin-bottom: 0; flex-grow: 1; }
         .save-combo-bar button { margin-bottom: 0; width: auto; padding: 12px 30px; }
@@ -224,22 +216,13 @@
             background: linear-gradient(135deg, var(--card-bg), var(--panel-bg));
             border: 1px solid var(--border-dim);
             border-left: 5px solid var(--bx-green);
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 0 10px 0 10px;
+            padding: 15px; margin-bottom: 15px; border-radius: 0 10px 0 10px;
             position: relative;
         }
 
         .combo-card h3 { margin: 0 0 10px 0; color: #fff; font-size: 1.2em; text-transform: uppercase; }
         
-        .combo-stats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            font-size: 0.9em;
-            color: #ccc;
-            font-weight: 600;
-        }
+        .combo-stats { display: flex; flex-wrap: wrap; gap: 8px; font-size: 0.85em; color: #ccc; font-weight: 600; }
         
         .combo-stats span {
             background: rgba(0,0,0,0.5);
@@ -247,17 +230,17 @@
             border-radius: 4px;
             border: 1px solid var(--border-dim);
             text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+        
+        .combo-stats .part-icon { color: #888; width: 14px; height: 14px; }
 
         .delete-btn {
-            position: absolute;
-            top: 10px; right: 10px;
-            width: auto;
-            padding: 5px 12px;
-            background: var(--danger);
-            color: white;
-            font-size: 0.8em;
-            margin: 0;
+            position: absolute; top: 10px; right: 10px;
+            width: auto; padding: 5px 12px; background: var(--danger);
+            color: white; font-size: 0.8em; margin: 0;
         }
 
         .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
@@ -272,6 +255,24 @@
 </head>
 <body>
 
+    <svg style="display: none;">
+        <symbol id="icon-blade" viewBox="0 0 24 24">
+            <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6zM12 6.5l-1.1 3.3h-3.4l2.8 2.2-1.1 3.3 2.8-2.2 2.8 2.2-1.1-3.3 2.8-2.2h-3.4z"/>
+        </symbol>
+        <symbol id="icon-main" viewBox="0 0 24 24">
+            <path d="M12 2l2 2 1-1 3 3-1 1 2 2 4-2-2 4 2 2-1 1 3 3-3 3-1-1-2 2 2 4-4-2-2 2 1 1-3 3-3-3 1-1-2-2-4 2 2-4-2-2 1-1-3-3 3-3 1 1 2-2-2-4 4 2 2-2zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/>
+        </symbol>
+        <symbol id="icon-assist" viewBox="0 0 24 24">
+            <path d="M12 2l3 3h6l-3 3 3 3h-6l-3 3-3-3h-6l3-3-3-3h6zM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+        </symbol>
+        <symbol id="icon-ratchet" viewBox="0 0 24 24">
+            <path d="M12 2l4 2 1-1 3 3-1 1 2 4-2 2 2 2-1 1 1 3-3 1-1 1-2-2-2 2-2-2-2 2-1-1-3-1 1-3 3-1-1-1-2-2 2-2-2-4 1-1 3-3 1 1zM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+        </symbol>
+        <symbol id="icon-bit" viewBox="0 0 24 24">
+            <path d="M12 2l6 4v10l-6 6-6-6V6zm0 4.5L8 9v6l4 2.5 4-2.5V9zM12 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+        </symbol>
+    </svg>
+
     <h1>BEYBLADE X HUD</h1>
 
     <div class="container">
@@ -280,27 +281,42 @@
             <div class="table-scroll">
                 <div class="five-col-grid">
                     <div class="input-group">
-                        <label>Blade / Lock</label>
+                        <label>
+                            <svg class="part-icon"><use href="#icon-blade"/></svg>
+                            Blade / Lock
+                        </label>
                         <input type="text" id="addBlade" placeholder="Es: Dran">
                         <button onclick="addPart('blades', 'addBlade')">Aggiungi</button>
                     </div>
                     <div class="input-group">
-                        <label>Main Blade (CX)</label>
+                        <label>
+                            <svg class="part-icon"><use href="#icon-main"/></svg>
+                            Main Blade (CX)
+                        </label>
                         <input type="text" id="addMainBlade" placeholder="Es: Rage">
                         <button onclick="addPart('mainBlades', 'addMainBlade')">Aggiungi</button>
                     </div>
                     <div class="input-group">
-                        <label>Assist Blade (CX)</label>
+                        <label>
+                            <svg class="part-icon"><use href="#icon-assist"/></svg>
+                            Assist Blade (CX)
+                        </label>
                         <input type="text" id="addAssistBlade" placeholder="Es: FE">
                         <button onclick="addPart('assistBlades', 'addAssistBlade')">Aggiungi</button>
                     </div>
                     <div class="input-group">
-                        <label>Ratchet</label>
+                        <label>
+                            <svg class="part-icon"><use href="#icon-ratchet"/></svg>
+                            Ratchet
+                        </label>
                         <input type="text" id="addRatchet" placeholder="Es: 4-55">
                         <button onclick="addPart('ratchets', 'addRatchet')">Aggiungi</button>
                     </div>
                     <div class="input-group">
-                        <label>Bit (Punta)</label>
+                        <label>
+                            <svg class="part-icon"><use href="#icon-bit"/></svg>
+                            Bit (Punta)
+                        </label>
                         <input type="text" id="addBit" placeholder="Es: Taper">
                         <button onclick="addPart('bits', 'addBit')">Aggiungi</button>
                     </div>
@@ -310,28 +326,27 @@
 
         <div class="panel">
             <h2>2. Plancia di Assemblaggio</h2>
-            <p style="color:#aaa; font-size:0.9em;">Tocca i componenti nelle colonne per incastrarli. Compila il nome e salva.</p>
             
             <div class="table-scroll">
                 <div class="five-col-grid">
                     <div class="col-box col-blades">
-                        <h3 style="color: #ff3366;">[ Blade / Lock ]</h3>
+                        <h3><svg class="part-icon"><use href="#icon-blade"/></svg> [ Blade / Lock ]</h3>
                         <ul id="listBlades"></ul>
                     </div>
                     <div class="col-box col-main-blades">
-                        <h3 style="color: #ff9900;">[ Main Blade ]</h3>
+                        <h3><svg class="part-icon"><use href="#icon-main"/></svg> [ Main Blade ]</h3>
                         <ul id="listMainBlades"></ul>
                     </div>
                     <div class="col-box col-assist-blades">
-                        <h3 style="color: #cc33ff;">[ Assist Blade ]</h3>
+                        <h3><svg class="part-icon"><use href="#icon-assist"/></svg> [ Assist Blade ]</h3>
                         <ul id="listAssistBlades"></ul>
                     </div>
                     <div class="col-box col-ratchets">
-                        <h3 style="color: #ffd700;">[ Ratchet ]</h3>
+                        <h3><svg class="part-icon"><use href="#icon-ratchet"/></svg> [ Ratchet ]</h3>
                         <ul id="listRatchets"></ul>
                     </div>
                     <div class="col-box col-bits">
-                        <h3 style="color: #33ccff;">[ Bit ]</h3>
+                        <h3><svg class="part-icon"><use href="#icon-bit"/></svg> [ Bit ]</h3>
                         <ul id="listBits"></ul>
                     </div>
                 </div>
@@ -339,4 +354,181 @@
 
             <div class="save-combo-bar">
                 <input type="text" id="comboName" placeholder="Nome Tattico (es. Lo Zombie Mancino)">
-                <button onclick="saveCombo()">Inizializza Deck</button
+                <button onclick="saveCombo()">Inizializza Deck</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Deck Operativi</h2>
+            <div id="comboContainer"></div>
+        </div>
+
+        <div class="panel">
+            <h2>Sistema di Salvataggio</h2>
+            <div class="tools-grid">
+                <button class="btn-action" onclick="exportData()">💾 Esporta Backup</button>
+                <button class="btn-action" onclick="document.getElementById('importFile').click()">📂 Importa Backup</button>
+                <input type="file" id="importFile" style="display:none;" accept=".json" onchange="importData(event)">
+            </div>
+            <button class="btn-secondary" onclick="clearInventory()">⚠️ Purge System (Reset Totale)</button>
+        </div>
+    </div>
+
+    <script>
+        let inventory = { blades: [], mainBlades: [], assistBlades: [], ratchets: [], bits: [] };
+        let savedCombos = [];
+        let currentSelection = { blades: null, mainBlades: null, assistBlades: null, ratchets: null, bits: null };
+
+        try {
+            const storedInv = localStorage.getItem('bx_inventory');
+            if (storedInv) {
+                const parsed = JSON.parse(storedInv);
+                inventory.blades = parsed.blades || [];
+                inventory.mainBlades = parsed.mainBlades || [];
+                inventory.assistBlades = parsed.assistBlades || [];
+                inventory.ratchets = parsed.ratchets || [];
+                inventory.bits = parsed.bits || [];
+            }
+            const storedCombos = localStorage.getItem('bx_combos');
+            if (storedCombos) savedCombos = JSON.parse(storedCombos);
+        } catch (error) {}
+
+        function addPart(type, inputId) {
+            const input = document.getElementById(inputId);
+            const name = input.value.trim();
+            if (!name) return;
+            if (!inventory[type].includes(name)) {
+                inventory[type].push(name); input.value = ''; saveData(); updateUI();
+            } else { alert("Componente già nel database!"); }
+        }
+
+        function toggleSelection(type, name) {
+            if (currentSelection[type] === name) { currentSelection[type] = null;
+            } else { currentSelection[type] = name; }
+            updateUI();
+        }
+
+        function removePart(event, type, name) {
+            event.stopPropagation();
+            inventory[type] = inventory[type].filter(item => item !== name);
+            if (currentSelection[type] === name) currentSelection[type] = null;
+            saveData(); updateUI();
+        }
+
+        function saveCombo() {
+            const name = document.getElementById("comboName").value.trim();
+            if (!name || !currentSelection.blades || !currentSelection.ratchets || !currentSelection.bits) {
+                alert("Setup incompleto. Seleziona almeno Nome, Lama, Ratchet e Bit."); return;
+            }
+            savedCombos.push({ id: Date.now(), name: name, blade: currentSelection.blades, mainBlade: currentSelection.mainBlades, assistBlade: currentSelection.assistBlades, ratchet: currentSelection.ratchets, bit: currentSelection.bits });
+            document.getElementById("comboName").value = '';
+            currentSelection = { blades: null, mainBlades: null, assistBlades: null, ratchets: null, bits: null };
+            saveData(); updateUI();
+        }
+
+        function deleteCombo(id) { 
+            savedCombos = savedCombos.filter(combo => combo.id !== id); 
+            saveData(); 
+            updateUI(); 
+        }
+        
+        function clearInventory() { 
+            if(confirm("Vuoi resettare tutto?")) { 
+                inventory = { blades: [], mainBlades: [], assistBlades: [], ratchets: [], bits: [] }; 
+                savedCombos = []; 
+                currentSelection = { blades: null, mainBlades: null, assistBlades: null, ratchets: null, bits: null }; 
+                saveData(); 
+                updateUI(); 
+            } 
+        }
+        
+        function saveData() { 
+            try { 
+                localStorage.setItem('bx_inventory', JSON.stringify(inventory)); 
+                localStorage.setItem('bx_combos', JSON.stringify(savedCombos)); 
+            } catch (error) {} 
+        }
+        
+        function exportData() { 
+            const dataToExport = { inventory: inventory, combos: savedCombos }; 
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToExport)); 
+            const downloadAnchorNode = document.createElement('a'); 
+            downloadAnchorNode.setAttribute("href", dataStr); 
+            downloadAnchorNode.setAttribute("download", "bx_arsenale_backup.json"); 
+            document.body.appendChild(downloadAnchorNode); 
+            downloadAnchorNode.click(); 
+            downloadAnchorNode.remove(); 
+        }
+        
+        function importData(event) { 
+            const file = event.target.files[0]; 
+            if (!file) return; 
+            const reader = new FileReader(); 
+            reader.onload = function(e) { 
+                try { 
+                    const importedData = JSON.parse(e.target.result); 
+                    if(importedData.inventory && importedData.combos) { 
+                        inventory = { 
+                            blades: importedData.inventory.blades || [], 
+                            mainBlades: importedData.inventory.mainBlades || [], 
+                            assistBlades: importedData.inventory.assistBlades || [], 
+                            ratchets: importedData.inventory.ratchets || [], 
+                            bits: importedData.inventory.bits || [] 
+                        }; 
+                        savedCombos = importedData.combos; 
+                        saveData(); 
+                        updateUI(); 
+                        alert("Backup importato!"); 
+                    } 
+                } catch (error) { 
+                    alert("File non valido."); 
+                } 
+                document.getElementById('importFile').value = ''; 
+            }; 
+            reader.readAsText(file); 
+        }
+
+        function renderList(type, array) {
+            return array.map(item => {
+                const isActive = currentSelection[type] === item ? 'active-part' : '';
+                return `<li class="${isActive}" onclick="toggleSelection('${type}', '${item}')">${item}<span class="del-part" onclick="removePart(event, '${type}', '${item}')">X</span></li>`;
+            }).join('');
+        }
+
+        function updateUI() {
+            document.getElementById("listBlades").innerHTML = renderList('blades', inventory.blades);
+            document.getElementById("listMainBlades").innerHTML = renderList('mainBlades', inventory.mainBlades);
+            document.getElementById("listAssistBlades").innerHTML = renderList('assistBlades', inventory.assistBlades);
+            document.getElementById("listRatchets").innerHTML = renderList('ratchets', inventory.ratchets);
+            document.getElementById("listBits").innerHTML = renderList('bits', inventory.bits);
+
+            const container = document.getElementById("comboContainer");
+            if (savedCombos.length === 0) {
+                container.innerHTML = "<p style='color: #777; font-style: italic; text-align: center;'>Tocca i pezzi per comporre un deck.</p>";
+            } else {
+                container.innerHTML = savedCombos.map(combo => {
+                    let cxHtml = '';
+                    if (combo.mainBlade || combo.assistBlade) {
+                        cxHtml = `
+                            <span><svg class="part-icon"><use href="#icon-main"/></svg> ${combo.mainBlade || '-'}</span>
+                            <span><svg class="part-icon"><use href="#icon-assist"/></svg> ${combo.assistBlade || '-'}</span>
+                        `;
+                    }
+                    return `
+                    <div class="combo-card">
+                        <button class="delete-btn" onclick="deleteCombo(${combo.id})">Rimuovi</button>
+                        <h3>${combo.name}</h3>
+                        <div class="combo-stats">
+                            <span><svg class="part-icon"><use href="#icon-blade"/></svg> ${combo.blade}</span>
+                            ${cxHtml}
+                            <span><svg class="part-icon"><use href="#icon-ratchet"/></svg> ${combo.ratchet}</span>
+                            <span><svg class="part-icon"><use href="#icon-bit"/></svg> ${combo.bit}</span>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+        }
+        updateUI();
+    </script>
+</body>
+</html>
