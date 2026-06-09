@@ -16,6 +16,7 @@
             --danger: #ff2a2a;
         }
 
+        /* Impedisce la fastidiosa selezione del testo blu quando tappi velocemente sul cellulare */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-base);
@@ -26,6 +27,8 @@
             color: var(--text-main);
             margin: 0;
             padding: 15px;
+            -webkit-user-select: none;
+            user-select: none; 
         }
 
         h1 {
@@ -68,7 +71,6 @@
             padding: 20px;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.4);
             position: relative;
-            overflow: hidden;
             width: 100%;
             box-sizing: border-box;
         }
@@ -80,12 +82,19 @@
             background: linear-gradient(90deg, var(--bx-green), var(--bx-cyan));
         }
 
-        /* GRID A 5 COLONNE PER ACQUISIZIONE E INVENTARIO */
-        .acquisition-grid, .inventory-grid {
+        /* Contenitore per permettere lo scroll orizzontale su mobile senza rompere le 5 colonne */
+        .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+            padding-bottom: 15px;
+        }
+
+        /* Griglia forzata a 5 colonne, non va mai a capo */
+        .five-col-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(5, minmax(180px, 1fr));
             gap: 15px;
-            margin-bottom: 10px;
+            min-width: 950px; /* Forza la larghezza per attivare lo scroll su mobile */
         }
 
         .input-group {
@@ -107,34 +116,49 @@
 
         .col-box {
             background: var(--card-bg);
-            padding: 15px;
             border-radius: 8px 0 8px 0;
-            border-left: 3px solid;
+            border: 1px solid var(--border-dim);
+            border-top: 4px solid;
+            overflow: hidden;
         }
         
-        .col-blades { border-color: #ff3366; }
-        .col-main-blades { border-color: #ff9900; }
-        .col-assist-blades { border-color: #cc33ff; }
-        .col-ratchets { border-color: #ffd700; }
-        .col-bits { border-color: #33ccff; }
+        .col-blades { border-top-color: #ff3366; }
+        .col-main-blades { border-top-color: #ff9900; }
+        .col-assist-blades { border-top-color: #cc33ff; }
+        .col-ratchets { border-top-color: #ffd700; }
+        .col-bits { border-top-color: #33ccff; }
 
-        .col-box h3 { font-size: 1.1em; margin: 0 0 10px 0; font-style: italic; text-transform: uppercase;}
-        .col-blades h3 { color: #ff3366; }
-        .col-main-blades h3 { color: #ff9900; }
-        .col-assist-blades h3 { color: #cc33ff; }
-        .col-ratchets h3 { color: #ffd700; }
-        .col-bits h3 { color: #33ccff; }
+        .col-box h3 { 
+            font-size: 1em; 
+            margin: 0; 
+            padding: 10px;
+            background: rgba(0,0,0,0.4);
+            font-style: italic; 
+            text-transform: uppercase;
+            text-align: center;
+        }
 
         ul { list-style-type: none; padding: 0; margin: 0; }
         li {
-            padding: 10px 0;
-            border-bottom: 1px dashed var(--border-dim);
+            padding: 12px 10px;
+            border-bottom: 1px solid var(--border-dim);
             font-size: 0.95em;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: pointer;
+            transition: 0.2s;
         }
+        li:hover { background: rgba(255,255,255,0.03); }
         li:last-child { border-bottom: none; }
+
+        /* Stile per i pezzi toccati/selezionati per la combo */
+        li.active-part {
+            background: rgba(0, 255, 85, 0.15);
+            color: var(--bx-green);
+            font-weight: 900;
+            border-left: 4px solid var(--bx-green);
+        }
 
         .del-part {
             color: var(--danger);
@@ -146,11 +170,9 @@
             border-radius: 4px;
         }
 
-        /* Dimensionamento */
-        select, input, button {
+        input {
             width: 100%;
             padding: 12px;
-            margin-bottom: 10px;
             background: rgba(0,0,0,0.5);
             border: 1px solid var(--border-dim);
             color: white;
@@ -161,11 +183,12 @@
             outline: none;
             -webkit-appearance: none;
         }
-
+        
         .input-group input { margin-bottom: 10px; }
-        .input-group button { margin-bottom: 0; padding: 10px; }
 
         button {
+            width: 100%;
+            padding: 12px;
             background: linear-gradient(45deg, var(--bx-green), var(--bx-cyan));
             color: #000;
             font-weight: 900;
@@ -176,18 +199,26 @@
             border: none;
             border-radius: 8px 0 8px 0;
             box-shadow: 0 4px 10px rgba(0, 255, 85, 0.2);
+            margin-bottom: 10px;
         }
 
         button:active { transform: scale(0.98); }
         .btn-secondary { background: #2a2a35; color: #fff; box-shadow: none; }
         .btn-action { background: #33ccff; color: #000; }
 
-        .setup-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 10px;
-            margin-bottom: 15px;
+        /* Barra di salvataggio combo */
+        .save-combo-bar {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            background: rgba(0, 255, 85, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px dashed var(--bx-green);
+            align-items: center;
         }
+        .save-combo-bar input { margin-bottom: 0; flex-grow: 1; }
+        .save-combo-bar button { margin-bottom: 0; width: auto; padding: 12px 30px; }
 
         .combo-card {
             background: linear-gradient(135deg, var(--card-bg), var(--panel-bg));
@@ -199,7 +230,7 @@
             position: relative;
         }
 
-        .combo-card h3 { margin: 0 0 10px 0; color: #fff; font-size: 1.2em; }
+        .combo-card h3 { margin: 0 0 10px 0; color: #fff; font-size: 1.2em; text-transform: uppercase; }
         
         .combo-stats {
             display: flex;
@@ -215,7 +246,6 @@
             padding: 6px 10px;
             border-radius: 4px;
             border: 1px solid var(--border-dim);
-            flex-grow: 1;
             text-align: center;
         }
 
@@ -230,16 +260,13 @@
             margin: 0;
         }
 
-        .tools-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
+        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 
         @media (max-width: 768px) {
             h1 { font-size: 1.6em; }
             .tools-grid { grid-template-columns: 1fr; }
+            .save-combo-bar { flex-direction: column; }
+            .save-combo-bar button { width: 100%; }
         }
     </style>
 </head>
@@ -249,259 +276,67 @@
 
     <div class="container">
         <div class="panel">
-            <h2>1. Scansione Componenti</h2>
-            <p style="margin-top:0; color:#aaa; font-size:0.9em;">Aggiungi i tuoi pezzi. Supporto totale per Basic Line e la nuova Custom Line (CX).</p>
-            
-            <div class="acquisition-grid">
-                <div class="input-group">
-                    <label>Lama / Lock Chip</label>
-                    <input type="text" id="addBlade" placeholder="Es: Dran, Ragna...">
-                    <button onclick="addPart('blades', 'addBlade')">Aggiungi</button>
-                </div>
-                <div class="input-group">
-                    <label>Main Blade (CX)</label>
-                    <input type="text" id="addMainBlade" placeholder="Es: Rage, Brave...">
-                    <button onclick="addPart('mainBlades', 'addMainBlade')">Aggiungi</button>
-                </div>
-                <div class="input-group">
-                    <label>Assist Blade (CX)</label>
-                    <input type="text" id="addAssistBlade" placeholder="Es: FE, Slash...">
-                    <button onclick="addPart('assistBlades', 'addAssistBlade')">Aggiungi</button>
-                </div>
-                <div class="input-group">
-                    <label>Cricchetto (Ratchet)</label>
-                    <input type="text" id="addRatchet" placeholder="Es: 4-55, 9-60...">
-                    <button onclick="addPart('ratchets', 'addRatchet')">Aggiungi</button>
-                </div>
-                <div class="input-group">
-                    <label>Punta (Bit)</label>
-                    <input type="text" id="addBit" placeholder="Es: Taper, Elevate...">
-                    <button onclick="addPart('bits', 'addBit')">Aggiungi</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel">
-            <h2>2. Setup Tattico</h2>
-            <input type="text" id="comboName" placeholder="Nome in Codice (es. Lo Zombie Mancino)">
-            <div class="setup-grid">
-                <select id="comboBlade"><option value="">-- Seleziona Lama / Lock Chip --</option></select>
-                <select id="comboMainBlade"><option value="">-- Main Blade (CX Opzionale) --</option></select>
-                <select id="comboAssistBlade"><option value="">-- Assist Blade (CX Opzionale) --</option></select>
-                <select id="comboRatchet"><option value="">-- Seleziona Cricchetto --</option></select>
-                <select id="comboBit"><option value="">-- Seleziona Punta --</option></select>
-            </div>
-            <button onclick="saveCombo()">Inizializza Deck</button>
-        </div>
-
-        <div class="panel">
-            <h2>Database Magazzino</h2>
-            <div class="inventory-grid">
-                <div class="col-box col-blades">
-                    <h3>[ Blade / Lock ]</h3>
-                    <ul id="listBlades"></ul>
-                </div>
-                <div class="col-box col-main-blades">
-                    <h3>[ Main Blade ]</h3>
-                    <ul id="listMainBlades"></ul>
-                </div>
-                <div class="col-box col-assist-blades">
-                    <h3>[ Assist Blade ]</h3>
-                    <ul id="listAssistBlades"></ul>
-                </div>
-                <div class="col-box col-ratchets">
-                    <h3>[ Ratchet ]</h3>
-                    <ul id="listRatchets"></ul>
-                </div>
-                <div class="col-box col-bits">
-                    <h3>[ Bit ]</h3>
-                    <ul id="listBits"></ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel">
-            <h2>Deck Operativi</h2>
-            <div id="comboContainer"></div>
-        </div>
-
-        <div class="panel">
-            <h2>Strumenti di Sistema</h2>
-            <div class="tools-grid">
-                <button class="btn-action" onclick="exportData()">💾 Esporta Backup</button>
-                <button class="btn-action" onclick="document.getElementById('importFile').click()">📂 Importa Backup</button>
-                <input type="file" id="importFile" style="display:none;" accept=".json" onchange="importData(event)">
-            </div>
-            <button class="btn-secondary" onclick="clearInventory()" style="margin-bottom: 0; margin-top: 10px;">⚠️ Purge System (Reset Totale)</button>
-        </div>
-    </div>
-
-    <script>
-        // Memoria con supporto a 5 categorie (retrocompatibile)
-        let inventory = { blades: [], mainBlades: [], assistBlades: [], ratchets: [], bits: [] };
-        let savedCombos = [];
-
-        try {
-            const storedInv = localStorage.getItem('bx_inventory');
-            if (storedInv) {
-                const parsed = JSON.parse(storedInv);
-                inventory.blades = parsed.blades || [];
-                inventory.mainBlades = parsed.mainBlades || [];
-                inventory.assistBlades = parsed.assistBlades || [];
-                inventory.ratchets = parsed.ratchets || [];
-                inventory.bits = parsed.bits || [];
-            }
-            const storedCombos = localStorage.getItem('bx_combos');
-            if (storedCombos) savedCombos = JSON.parse(storedCombos);
-        } catch (error) {}
-
-        function addPart(type, inputId) {
-            const input = document.getElementById(inputId);
-            const name = input.value.trim();
-            if (!name) return;
-            if (!inventory[type].includes(name)) {
-                inventory[type].push(name);
-                input.value = ''; 
-                saveData(); updateUI();
-            } else {
-                alert("ATTENZIONE: Componente già presente nel database!");
-            }
-        }
-
-        function removePart(type, name) {
-            inventory[type] = inventory[type].filter(item => item !== name);
-            saveData(); updateUI();
-        }
-
-        function saveCombo() {
-            const name = document.getElementById("comboName").value.trim();
-            const blade = document.getElementById("comboBlade").value;
-            const mainBlade = document.getElementById("comboMainBlade").value;
-            const assistBlade = document.getElementById("comboAssistBlade").value;
-            const ratchet = document.getElementById("comboRatchet").value;
-            const bit = document.getElementById("comboBit").value;
-
-            // Main e Assist sono opzionali per i bey non-CX
-            if (!name || !blade || !ratchet || !bit) {
-                alert("ERRORE: Setup di base incompleto. Selezionare almeno Nome, Lama/Lock, Cricchetto e Punta."); return;
-            }
-            savedCombos.push({ id: Date.now(), name, blade, mainBlade, assistBlade, ratchet, bit });
-            
-            document.getElementById("comboName").value = '';
-            document.getElementById("comboBlade").value = '';
-            document.getElementById("comboMainBlade").value = '';
-            document.getElementById("comboAssistBlade").value = '';
-            document.getElementById("comboRatchet").value = '';
-            document.getElementById("comboBit").value = '';
-            
-            saveData(); updateUI();
-        }
-
-        function deleteCombo(id) {
-            savedCombos = savedCombos.filter(combo => combo.id !== id);
-            saveData(); updateUI();
-        }
-
-        function clearInventory() {
-            if(confirm("ATTENZIONE CRITICA: Vuoi formattare il magazzino?")) {
-                inventory = { blades: [], mainBlades: [], assistBlades: [], ratchets: [], bits: [] };
-                savedCombos = [];
-                saveData(); updateUI();
-            }
-        }
-
-        function saveData() {
-            try {
-                localStorage.setItem('bx_inventory', JSON.stringify(inventory));
-                localStorage.setItem('bx_combos', JSON.stringify(savedCombos));
-            } catch (error) {}
-        }
-
-        function exportData() {
-            const dataToExport = { inventory: inventory, combos: savedCombos };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToExport));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href",     dataStr);
-            downloadAnchorNode.setAttribute("download", "bx_arsenale_backup.json");
-            document.body.appendChild(downloadAnchorNode); 
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-                    if(importedData.inventory && importedData.combos) {
-                        inventory = {
-                            blades: importedData.inventory.blades || [],
-                            mainBlades: importedData.inventory.mainBlades || [],
-                            assistBlades: importedData.inventory.assistBlades || [],
-                            ratchets: importedData.inventory.ratchets || [],
-                            bits: importedData.inventory.bits || []
-                        };
-                        savedCombos = importedData.combos;
-                        saveData(); updateUI();
-                        alert("Backup importato con successo!");
-                    } else {
-                        alert("File non valido.");
-                    }
-                } catch (error) {
-                    alert("Errore durante la lettura.");
-                }
-                document.getElementById('importFile').value = '';
-            };
-            reader.readAsText(file);
-        }
-
-        function updateUI() {
-            // Render Liste Inventario
-            document.getElementById("listBlades").innerHTML = inventory.blades.map(i => `<li>${i} <span class="del-part" onclick="removePart('blades', '${i}')">X</span></li>`).join('');
-            document.getElementById("listMainBlades").innerHTML = inventory.mainBlades.map(i => `<li>${i} <span class="del-part" onclick="removePart('mainBlades', '${i}')">X</span></li>`).join('');
-            document.getElementById("listAssistBlades").innerHTML = inventory.assistBlades.map(i => `<li>${i} <span class="del-part" onclick="removePart('assistBlades', '${i}')">X</span></li>`).join('');
-            document.getElementById("listRatchets").innerHTML = inventory.ratchets.map(i => `<li>${i} <span class="del-part" onclick="removePart('ratchets', '${i}')">X</span></li>`).join('');
-            document.getElementById("listBits").innerHTML = inventory.bits.map(i => `<li>${i} <span class="del-part" onclick="removePart('bits', '${i}')">X</span></li>`).join('');
-
-            // Render Selectors
-            document.getElementById("comboBlade").innerHTML = '<option value="">-- Lama / Lock Chip --</option>' + inventory.blades.map(i => `<option value="${i}">${i}</option>`).join('');
-            document.getElementById("comboMainBlade").innerHTML = '<option value="">-- Main Blade (CX Opzionale) --</option>' + inventory.mainBlades.map(i => `<option value="${i}">${i}</option>`).join('');
-            document.getElementById("comboAssistBlade").innerHTML = '<option value="">-- Assist Blade (CX Opzionale) --</option>' + inventory.assistBlades.map(i => `<option value="${i}">${i}</option>`).join('');
-            document.getElementById("comboRatchet").innerHTML = '<option value="">-- Cricchetto --</option>' + inventory.ratchets.map(i => `<option value="${i}">${i}</option>`).join('');
-            document.getElementById("comboBit").innerHTML = '<option value="">-- Punta --</option>' + inventory.bits.map(i => `<option value="${i}">${i}</option>`).join('');
-
-            // Render Deck
-            const container = document.getElementById("comboContainer");
-            if (savedCombos.length === 0) {
-                container.innerHTML = "<p style='color: #777; font-style: italic; text-align: center;'>Nessun deck operativo. Inizializzare un setup dal pannello superiore.</p>";
-            } else {
-                container.innerHTML = savedCombos.map(combo => {
-                    let cxHtml = '';
-                    if (combo.mainBlade || combo.assistBlade) {
-                        cxHtml = `
-                            <span>⚙️ ${combo.mainBlade || '-'}</span>
-                            <span>🛡️ ${combo.assistBlade || '-'}</span>
-                        `;
-                    }
-                    return `
-                    <div class="combo-card">
-                        <button class="delete-btn" onclick="deleteCombo(${combo.id})">Rimuovi</button>
-                        <h3>${combo.name}</h3>
-                        <div class="combo-stats">
-                            <span>🗡️ ${combo.blade}</span>
-                            ${cxHtml}
-                            <span>🔩 ${combo.ratchet}</span>
-                            <span>🎯 ${combo.bit}</span>
-                        </div>
+            <h2>1. Acquisizione Componenti</h2>
+            <div class="table-scroll">
+                <div class="five-col-grid">
+                    <div class="input-group">
+                        <label>Blade / Lock</label>
+                        <input type="text" id="addBlade" placeholder="Es: Dran">
+                        <button onclick="addPart('blades', 'addBlade')">Aggiungi</button>
                     </div>
-                    `;
-                }).join('');
-            }
-        }
+                    <div class="input-group">
+                        <label>Main Blade (CX)</label>
+                        <input type="text" id="addMainBlade" placeholder="Es: Rage">
+                        <button onclick="addPart('mainBlades', 'addMainBlade')">Aggiungi</button>
+                    </div>
+                    <div class="input-group">
+                        <label>Assist Blade (CX)</label>
+                        <input type="text" id="addAssistBlade" placeholder="Es: FE">
+                        <button onclick="addPart('assistBlades', 'addAssistBlade')">Aggiungi</button>
+                    </div>
+                    <div class="input-group">
+                        <label>Ratchet</label>
+                        <input type="text" id="addRatchet" placeholder="Es: 4-55">
+                        <button onclick="addPart('ratchets', 'addRatchet')">Aggiungi</button>
+                    </div>
+                    <div class="input-group">
+                        <label>Bit (Punta)</label>
+                        <input type="text" id="addBit" placeholder="Es: Taper">
+                        <button onclick="addPart('bits', 'addBit')">Aggiungi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        updateUI();
-    </script>
-</body>
-</html>
+        <div class="panel">
+            <h2>2. Plancia di Assemblaggio</h2>
+            <p style="color:#aaa; font-size:0.9em;">Tocca i componenti nelle colonne per incastrarli. Compila il nome e salva.</p>
+            
+            <div class="table-scroll">
+                <div class="five-col-grid">
+                    <div class="col-box col-blades">
+                        <h3 style="color: #ff3366;">[ Blade / Lock ]</h3>
+                        <ul id="listBlades"></ul>
+                    </div>
+                    <div class="col-box col-main-blades">
+                        <h3 style="color: #ff9900;">[ Main Blade ]</h3>
+                        <ul id="listMainBlades"></ul>
+                    </div>
+                    <div class="col-box col-assist-blades">
+                        <h3 style="color: #cc33ff;">[ Assist Blade ]</h3>
+                        <ul id="listAssistBlades"></ul>
+                    </div>
+                    <div class="col-box col-ratchets">
+                        <h3 style="color: #ffd700;">[ Ratchet ]</h3>
+                        <ul id="listRatchets"></ul>
+                    </div>
+                    <div class="col-box col-bits">
+                        <h3 style="color: #33ccff;">[ Bit ]</h3>
+                        <ul id="listBits"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="save-combo-bar">
+                <input type="text" id="comboName" placeholder="Nome Tattico (es. Lo Zombie Mancino)">
+                <button onclick="saveCombo()">Inizializza Deck</button
